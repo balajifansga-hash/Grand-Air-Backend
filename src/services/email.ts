@@ -310,9 +310,40 @@ async function sendHttpsApiEmail(options: {
   subject: string;
   html: string;
 }): Promise<{ success: boolean; response?: string; error?: string; method?: string }> {
-  const resendKey = process.env.RESEND_API_KEY;
   const brevoKey = process.env.BREVO_API_KEY;
+  const resendKey = process.env.RESEND_API_KEY;
 
+  // 1. Try Brevo FIRST (Allows delivering to ANY real customer email without sandbox restriction!)
+  if (brevoKey) {
+    try {
+      const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+          'api-key': brevoKey.trim(),
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          sender: { name: 'Grand Air Electronics', email: 'balajifansga@gmail.com' },
+          to: [{ email: options.to }],
+          subject: options.subject,
+          htmlContent: options.html
+        }),
+        signal: AbortSignal.timeout(8000)
+      });
+      const data: any = await res.json();
+      if (res.ok) {
+        console.log(`🚀 [BREVO HTTPS DELIVERED DIRECTLY TO CUSTOMER] Email sent to: ${options.to}`);
+        return { success: true, response: JSON.stringify(data), method: 'Brevo API (Direct to Customer)' };
+      } else {
+        console.warn(`⚠️ [BREVO REJECTION]`, data);
+      }
+    } catch (e: any) {
+      console.warn(`⚠️ [BREVO ERROR] ${e.message}`);
+    }
+  }
+
+  // 2. Fallback to Resend API
   if (resendKey) {
     try {
       const res = await fetch('https://api.resend.com/emails', {
@@ -362,32 +393,6 @@ async function sendHttpsApiEmail(options: {
       }
     } catch (e: any) {
       console.warn(`⚠️ [RESEND ERROR] ${e.message}`);
-    }
-  }
-
-  if (brevoKey) {
-    try {
-      const res = await fetch('https://api.brevo.com/v3/smtp/email', {
-        method: 'POST',
-        headers: {
-          'api-key': brevoKey.trim(),
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          sender: { name: 'Grand Air Electronics', email: 'balajifansga@gmail.com' },
-          to: [{ email: options.to }],
-          subject: options.subject,
-          htmlContent: options.html
-        }),
-        signal: AbortSignal.timeout(6000)
-      });
-      const data: any = await res.json();
-      if (res.ok) {
-        console.log(`🚀 [BREVO HTTPS DELIVERED] Email sent to: ${options.to}`);
-        return { success: true, response: JSON.stringify(data), method: 'Brevo API (HTTPS Port 443)' };
-      }
-    } catch (e: any) {
-      console.warn(`⚠️ [BREVO ERROR] ${e.message}`);
     }
   }
 
