@@ -46,6 +46,19 @@ export type UnitStatus =
   | 'sold' 
   | 'in_service';
 
+export interface WarrantyRegistration {
+  customerName: string;
+  customerPhone: string;
+  customerEmail?: string;
+  customerUpiId?: string;
+  redeemAmount?: number;
+  redeemStatus?: string;
+  customerCity?: string;
+  dealerName?: string;
+  invoiceNumber?: string;
+  registeredAt: string;
+}
+
 export interface ProductUnit {
   id: string;
   serialNumber: string;
@@ -75,6 +88,7 @@ export interface ProductUnit {
   notes?: string;
   scannedCount: number;
   lastScannedAt?: string;
+  warrantyRegistration?: WarrantyRegistration;
 }
 
 export interface ManufacturingBatch {

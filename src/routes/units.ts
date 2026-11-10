@@ -3,6 +3,7 @@ import QRCode from 'qrcode';
 import { db } from '../data/db.js';
 import { isDatabaseConnected } from '../config/db.js';
 import { UnitModel } from '../models/Unit.js';
+import { BatchModel } from '../models/Batch.js';
 import { UnitStatus } from '../types.js';
 import { emailService } from '../services/email.js';
 
