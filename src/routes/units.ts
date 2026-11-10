@@ -234,7 +234,10 @@ unitsRouter.patch('/:serialNumber/status', async (req: Request, res: Response) =
 // POST register customer warranty & send dual emails
 unitsRouter.post('/:serialNumber/register-warranty', async (req: Request, res: Response) => {
   try {
-    const serialNumber = String(req.params.serialNumber).toUpperCase();
+    let rawSerial = decodeURIComponent(String(req.params.serialNumber || '')).trim();
+    const match = rawSerial.match(/GA-[A-Z0-9]{2,4}-\d{6}-B\d{2,4}-\d{3,5}/i);
+    const serialNumber = match ? match[0].toUpperCase() : rawSerial.toUpperCase();
+
     const { 
       customerName, 
       customerPhone, 

@@ -89,23 +89,8 @@ export async function manufactureProductBatch(params: ManufactureParams): Promis
     const uId = `unit-${serialNumber}-${Date.now()}`;
     unitIds.push(uId);
 
-    const qrPayload = JSON.stringify({
-      org: 'Grand Air Electronics Pvt Ltd',
-      brand: 'Grand Air',
-      product: product.name,
-      model: product.modelNumber,
-      sn: serialNumber,
-      size: `${product.specs.sweepMm}mm`,
-      voltage: product.specs.voltage,
-      power: `${product.specs.powerWatts}W`,
-      rpm: `${product.specs.rpm} RPM`,
-      airDelivery: `${product.specs.airDeliveryCmm} CMM`,
-      batch: batchNumber,
-      mfg: now.toISOString().split('T')[0],
-      vcode,
-      qc: 'QC-PASS-ISO9001',
-      verifyUrl: `http://localhost:5173/?verify=${serialNumber}`
-    });
+    // Clean, high-speed scannable QR payload: serial number directly for instant 0.05s camera decode
+    const qrPayload = serialNumber;
 
     const qrDataUrl = await QRCode.toDataURL(qrPayload, {
       errorCorrectionLevel: 'M',
