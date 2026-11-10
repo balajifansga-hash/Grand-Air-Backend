@@ -167,7 +167,7 @@ function sendGmailPort465(options: {
         });
       });
 
-      socket.setTimeout(8000, () => {
+      socket.setTimeout(4000, () => {
         socket.destroy();
         finish({ success: false, error: 'Connection to smtp.gmail.com:465 timed out' });
       });
@@ -293,7 +293,7 @@ function sendGmailStarttls(options: {
         });
       });
 
-      netSocket.setTimeout(10000, () => {
+      netSocket.setTimeout(4000, () => {
         netSocket.destroy();
         finish({ success: false, error: 'Connection to smtp.gmail.com:587 timed out' });
       });
@@ -301,6 +301,88 @@ function sendGmailStarttls(options: {
       finish({ success: false, error: e.message });
     }
   });
+}
+
+// 3. Cloud HTTPS API Transport (Port 443 - Never blocked by Render or Cloud firewalls)
+async function sendHttpsApiEmail(options: {
+  from: string;
+  to: string;
+  subject: string;
+  html: string;
+}): Promise<{ success: boolean; response?: string; error?: string; method?: string }> {
+  const resendKey = process.env.RESEND_API_KEY;
+  const brevoKey = process.env.BREVO_API_KEY;
+
+  if (resendKey) {
+    try {
+      const res = await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${resendKey.trim()}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          from: process.env.EMAIL_FROM || 'Grand Air <onboarding@resend.dev>',
+          to: [options.to],
+          subject: options.subject,
+          html: options.html
+        }),
+        signal: AbortSignal.timeout(6000)
+      });
+      const data: any = await res.json();
+      if (res.ok) {
+        console.log(`🚀 [RESEND HTTPS DELIVERED] Email sent to: ${options.to}`);
+        return { success: true, response: JSON.stringify(data), method: 'Resend API (HTTPS Port 443)' };
+      }
+    } catch (e: any) {
+      console.warn(`⚠️ [RESEND ERROR] ${e.message}`);
+    }
+  }
+
+  if (brevoKey) {
+    try {
+      const res = await fetch('https://api.brevo.com/v3/smtp/email', {
+        method: 'POST',
+        headers: {
+          'api-key': brevoKey.trim(),
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          sender: { name: 'Grand Air Electronics', email: 'balajifansga@gmail.com' },
+          to: [{ email: options.to }],
+          subject: options.subject,
+          htmlContent: options.html
+        }),
+        signal: AbortSignal.timeout(6000)
+      });
+      const data: any = await res.json();
+      if (res.ok) {
+        console.log(`🚀 [BREVO HTTPS DELIVERED] Email sent to: ${options.to}`);
+        return { success: true, response: JSON.stringify(data), method: 'Brevo API (HTTPS Port 443)' };
+      }
+    } catch (e: any) {
+      console.warn(`⚠️ [BREVO ERROR] ${e.message}`);
+    }
+  }
+
+  return { success: false, error: 'No HTTPS API configured' };
+}
+
+// Unified email sender: tries HTTPS first if configured, then direct SMTPS 465 -> 587
+async function sendUnifiedEmail(options: {
+  from: string;
+  to: string;
+  subject: string;
+  html: string;
+}): Promise<{ success: boolean; response?: string; error?: string; method?: string }> {
+  // If cloud HTTPS API key is available, use HTTPS first (Port 443 works everywhere!)
+  if (process.env.RESEND_API_KEY || process.env.BREVO_API_KEY) {
+    const httpRes = await sendHttpsApiEmail(options);
+    if (httpRes.success) return httpRes;
+  }
+
+  // Otherwise, use direct SMTPS on Port 465 / 587
+  return await sendGmailSmtp(options);
 }
 
 // Unified SMTPS transport with automatic Port 465 -> Port 587 fallback
@@ -376,7 +458,7 @@ class EmailService {
         <p style="color: #059669; font-weight: bold; font-size: 14px;">🎉 Automated dual email dispatch to customers and management is operating perfectly!</p>
       </div>
     `;
-    return await sendGmailSmtp({
+    return await sendUnifiedEmail({
       from: 'balajifansga@gmail.com',
       to: targetEmail,
       subject,
@@ -544,15 +626,15 @@ class EmailService {
       status: 'delivered'
     };
 
-    // Asynchronously dispatch real emails via Gmail SMTPS (465 -> 587 fallback)
+    // Asynchronously dispatch real emails via Unified Email Service (HTTPS Port 443 / SMTP Port 465)
     Promise.all([
-      sendGmailSmtp({
+      sendUnifiedEmail({
         from: 'balajifansga@gmail.com',
         to: custRecord.to,
         subject: custRecord.subject,
         html: custRecord.html
       }),
-      sendGmailSmtp({
+      sendUnifiedEmail({
         from: 'balajifansga@gmail.com',
         to: mgmtRecord.to,
         subject: mgmtRecord.subject,

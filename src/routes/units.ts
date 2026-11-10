@@ -344,19 +344,20 @@ unitsRouter.post('/:serialNumber/register-warranty', async (req: Request, res: R
       console.log(`✨ [AUTO-REGISTERED UNIT] Created unit ${serialNumber} in database for customer ${customerName}`);
     }
 
-    // Send dual emails (Customer + Management) automatically!
-    const emailResult = await emailService.sendDualWarrantyRegistrationEmails({
+    // Trigger dual emails (Customer + Management) asynchronously so cloud firewalls / slow SMTP never block registration!
+    emailService.sendDualWarrantyRegistrationEmails({
       unit: targetUnit,
       registration
+    }).catch(err => {
+      console.warn('⚠️ [EMAIL ASYNC ERROR]', err.message);
     });
 
     res.json({
       success: true,
-      message: `Warranty registered successfully! Confirmation email sent to ${registration.customerEmail || customerName} and balajifansga@gmail.com.`,
+      message: `Warranty registered successfully! Confirmation email dispatched to ${registration.customerEmail || customerName} and balajifansga@gmail.com.`,
       data: {
         unit: targetUnit,
-        registration,
-        emails: emailResult
+        registration
       }
     });
   } catch (err: any) {
