@@ -1,0 +1,154 @@
+{
+  "products": [
+    {
+      "id": "prod-active-air-1200",
+      "sku": "GA-CF-AA1200",
+      "modelNumber": "Active Air 1200mm",
+      "name": "Grand Air Active Air Ceiling Fan (1200mm / 48\")",
+      "category": "ceiling_fan",
+      "description": "Active breeze fan with excellent performance. Premium 3-blade aerodynamic design with 270 CMM high air delivery.",
+      "price": 2499,
+      "imageUrl": "/active-air-fan.jpg",
+      "specs": {
+        "sweepMm": 1200,
+        "bladeCount": 3,
+        "motorType": "Heavy Duty 100% Copper Winding Motor",
+        "rpm": 370,
+        "powerWatts": 55,
+        "airDeliveryCmm": 270,
+        "voltage": "220-240V, 50Hz",
+        "color": "Glossy Rich Brown / Black",
+        "hasRemote": false,
+        "warrantyMonths": 24
+      },
+      "status": "active",
+      "totalManufactured": 1,
+      "inStock": 1,
+      "createdAt": "2026-11-09T10:00:00.000Z",
+      "updatedAt": "2026-11-09T19:07:38.101Z"
+    },
+    {
+      "id": "prod-active-air-900",
+      "sku": "GA-CF-AA900",
+      "modelNumber": "Active Air 900mm",
+      "name": "Grand Air Active Air Ceiling Fan (900mm / 36\")",
+      "category": "ceiling_fan",
+      "description": "Active breeze fan with compact sweep, engineered for bedrooms, cabins, and dining spaces. 170 CMM air delivery.",
+      "price": 2199,
+      "imageUrl": "/active-air-fan.jpg",
+      "specs": {
+        "sweepMm": 900,
+        "bladeCount": 3,
+        "motorType": "High-Torque 100% Copper Winding Motor",
+        "rpm": 370,
+        "powerWatts": 55,
+        "airDeliveryCmm": 170,
+        "voltage": "220-240V, 50Hz",
+        "color": "Glossy Rich Brown / Black",
+        "hasRemote": false,
+        "warrantyMonths": 24
+      },
+      "status": "active",
+      "totalManufactured": 0,
+      "inStock": 0,
+      "createdAt": "2026-11-09T10:00:00.000Z",
+      "updatedAt": "2026-11-09T10:00:00.000Z"
+    },
+    {
+      "id": "prod-active-air-600",
+      "sku": "GA-CF-AA600",
+      "modelNumber": "Active Air 600mm",
+      "name": "Grand Air Active Air High-Speed Ceiling Fan (600mm / 24\")",
+      "category": "ceiling_fan",
+      "description": "High-speed 850 RPM compact ceiling fan for kitchens, balconies, and shops. 125 CMM instant breeze.",
+      "price": 1899,
+      "imageUrl": "/active-air-fan.jpg",
+      "specs": {
+        "sweepMm": 600,
+        "bladeCount": 3,
+        "motorType": "Ultra High-Speed Induction Motor",
+        "rpm": 850,
+        "powerWatts": 75,
+        "airDeliveryCmm": 125,
+        "voltage": "220-240V, 50Hz",
+        "color": "Glossy Rich Brown / Black",
+        "hasRemote": false,
+        "warrantyMonths": 24
+      },
+      "status": "active",
+      "totalManufactured": 0,
+      "inStock": 0,
+      "createdAt": "2026-11-09T10:00:00.000Z",
+      "updatedAt": "2026-11-09T10:00:00.000Z"
+    }
+  ],
+  "batches": [
+    {
+      "id": "batch-1794251257848",
+      "batchNumber": "GA-B20261110-001",
+      "productId": "prod-active-air-1200",
+      "productName": "Grand Air Active Air Ceiling Fan (1200mm / 48\")",
+      "category": "ceiling_fan",
+      "quantity": 1,
+      "plantLocation": "Grand Air Main Plant #1 (Coimbatore)",
+      "assemblyLine": "Line 1 - Active Air Ceiling Fan Assembly",
+      "inspectorName": "K. Rajesh (Lead QC Auditor)",
+      "status": "completed",
+      "serialRangeStart": "GA-CF-202611-B01-0001",
+      "serialRangeEnd": "GA-CF-202611-B01-0001",
+      "createdAt": "2026-11-09T19:07:37.848Z",
+      "unitIds": [
+        "unit-GA-CF-202611-B01-0001-1794251257848"
+      ]
+    }
+  ],
+  "units": [
+    {
+      "id": "unit-GA-CF-202611-B01-0001-1794251257848",
+      "serialNumber": "GA-CF-202611-B01-0001",
+      "batchId": "batch-1794251257848",
+      "batchNumber": "GA-B20261110-001",
+      "productId": "prod-active-air-1200",
+      "productName": "Grand Air Active Air Ceiling Fan (1200mm / 48\")",
+      "modelNumber": "Active Air 1200mm",
+      "category": "ceiling_fan",
+      "manufacturingDate": "2026-11-09T19:07:37.848Z",
+      "plantLocation": "Grand Air Main Plant #1 (Coimbatore)",
+      "inspectorName": "K. Rajesh (Lead QC Auditor)",
+      "qcPassed": true,
+      "qcStamp": "QC-PASSED-ISO9001",
+      "status": "sold",
+      "verificationCode": "3LEM-9J37",
+      "qrPayload": "{\"org\":\"Grand Air Electronics Pvt Ltd\",\"brand\":\"Grand Air\",\"product\":\"Grand Air Active Air Ceiling Fan (1200mm / 48\\\")\",\"model\":\"Active Air 1200mm\",\"sn\":\"GA-CF-202611-B01-0001\",\"size\":\"1200mm\",\"voltage\":\"220-240V, 50Hz\",\"power\":\"55W\",\"rpm\":\"370 RPM\",\"airDelivery\":\"270 CMM\",\"batch\":\"GA-B20261110-001\",\"mfg\":\"2026-11-09\",\"vcode\":\"3LEM-9J37\",\"qc\":\"QC-PASS-ISO9001\",\"verifyUrl\":\"http://localhost:5173/?verify=GA-CF-202611-B01-0001\"}",
+      "qrDataUrl": "data:image/png;base64,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",
+      "specsSnapshot": {
+        "sweepMm": 1200,
+        "rpm": 370,
+        "powerWatts": 55,
+        "color": "Glossy Rich Brown / Black",
+        "warrantyMonths": 24
+      },
+      "warrantyExpiryDate": "2028-11-09T19:07:37.848Z",
+      "notes": "Batch GA-B20261110-001 production run",
+      "scannedCount": 2,
+      "lastScannedAt": "2026-11-09T19:10:19.292Z",
+      "warrantyRegistration": {
+        "customerName": "Rahul Sharma",
+        "customerPhone": "9876543210",
+        "customerEmail": "rahul.sharma@gmail.com",
+        "customerUpiId": "rahul.sharma@okhdfcbank",
+        "redeemAmount": 150,
+        "redeemStatus": "Processing",
+        "customerCity": "Grand Air Direct Customer",
+        "dealerName": "Official Grand Air Verification Portal",
+        "invoiceNumber": "INV-421138",
+        "registeredAt": "2026-11-09T19:10:21.138Z"
+      }
+    }
+  ],
+  "meta": {
+    "initializedAt": "2026-11-09T10:00:00.000Z",
+    "lastSavedAt": "2026-11-09T19:10:21.138Z",
+    "version": "3.0.0"
+  }
+}
