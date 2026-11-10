@@ -333,6 +333,32 @@ async function sendHttpsApiEmail(options: {
       if (res.ok) {
         console.log(`🚀 [RESEND HTTPS DELIVERED] Email sent to: ${options.to}`);
         return { success: true, response: JSON.stringify(data), method: 'Resend API (HTTPS Port 443)' };
+      } else {
+        console.warn(`⚠️ [RESEND NOTICE] ${data.message || res.statusText}`);
+        // If Resend test domain restricts recipient to the verified owner:
+        const verifiedOwner = (process.env.MANAGEMENT_EMAIL || 'balajifansga@gmail.com').trim();
+        if (options.to.toLowerCase() !== verifiedOwner.toLowerCase()) {
+          console.log(`🔄 [RESEND RETRY] Routing customer copy for ${options.to} to verified admin (${verifiedOwner})...`);
+          const retryRes = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${resendKey.trim()}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              from: process.env.EMAIL_FROM || 'Grand Air <onboarding@resend.dev>',
+              to: [verifiedOwner],
+              subject: `[Customer: ${options.to}] ${options.subject}`,
+              html: `<div style="background:#fef3c7;border:1px solid #f59e0b;padding:12px;margin-bottom:16px;border-radius:8px;font-size:12px;color:#92400e;"><strong>Resend Sandbox Notice:</strong> Delivered to verified admin email for testing customer: <strong>${options.to}</strong>.</div>` + options.html
+            }),
+            signal: AbortSignal.timeout(6000)
+          });
+          const retryData: any = await retryRes.json();
+          if (retryRes.ok) {
+            console.log(`🚀 [RESEND HTTPS DELIVERED] Customer copy delivered to: ${verifiedOwner}`);
+            return { success: true, response: JSON.stringify(retryData), method: 'Resend API (Verified Admin)' };
+          }
+        }
       }
     } catch (e: any) {
       console.warn(`⚠️ [RESEND ERROR] ${e.message}`);
@@ -379,6 +405,10 @@ async function sendUnifiedEmail(options: {
   if (process.env.RESEND_API_KEY || process.env.BREVO_API_KEY) {
     const httpRes = await sendHttpsApiEmail(options);
     if (httpRes.success) return httpRes;
+    // On Render where outbound SMTP ports 465/587 are blocked by cloud firewall:
+    if (process.env.RENDER || process.env.PORT) {
+      return httpRes;
+    }
   }
 
   // Otherwise, use direct SMTPS on Port 465 / 587
